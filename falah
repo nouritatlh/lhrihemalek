@@ -1,0 +1,645 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Secret Space ✨</title>
+    
+    <style>
+        :root {
+            --bg-color: #030712;
+            --text-color: #ffffff;
+            --accent-color: #f1c40f;
+            --accent-gradient: linear-gradient(135deg, #f1c40f, #d4af37);
+            --card-bg: rgba(10, 17, 36, 0.85);
+            --btn-bg: rgba(15, 23, 42, 0.8);
+            --sparkle-color: #f1c40f;
+            --sparkle-shadow: #d4af37;
+        }
+
+        /* --- 1. مود غيبلي --- */
+        body.ghibli-mode {
+            --bg-color: #f2f7f4;
+            --text-color: #2c3e35;
+            --accent-color: #3b7a57;
+            --accent-gradient: linear-gradient(135deg, #4ea86d, #3b7a57);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --btn-bg: rgba(230, 242, 235, 0.9);
+            --sparkle-color: #68bb81;
+            --sparkle-shadow: #3b7a57;
+        }
+
+        /* --- 2. مود محطة القطار 9 ¾ --- */
+        body.platform-mode {
+            --bg-color: #0b090a;
+            --text-color: #f5f3f4;
+            --accent-color: #e5383b;
+            --accent-gradient: linear-gradient(135deg, #e5383b, #ba181b);
+            --card-bg: rgba(26, 18, 18, 0.9);
+            --btn-bg: rgba(43, 24, 24, 0.85);
+            --sparkle-color: #e5383b;
+            --sparkle-shadow: #ba181b;
+        }
+
+        /* --- 3. مود الغابة المسحورة --- */
+        body.forest-mode {
+            --bg-color: #04150f;
+            --text-color: #ecfdf5;
+            --accent-color: #34d399;
+            --accent-gradient: linear-gradient(135deg, #34d399, #059669);
+            --card-bg: rgba(6, 40, 27, 0.85);
+            --btn-bg: rgba(4, 47, 31, 0.8);
+            --sparkle-color: #34d399;
+            --sparkle-shadow: #059669;
+        }
+
+        /* --- 4. مود سانشاين --- */
+        body.yellow-mode {
+            --bg-color: #fffde6;
+            --text-color: #5c4000;
+            --accent-color: #f59e0b;
+            --accent-gradient: linear-gradient(135deg, #fbbf24, #d97706);
+            --card-bg: rgba(255, 253, 215, 0.95);
+            --btn-bg: rgba(254, 243, 153, 0.85);
+            --sparkle-color: #fbbf24;
+            --sparkle-shadow: #f59e0b;
+        }
+
+        body {
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            font-family: 'Georgia', serif; 
+            text-align: center; 
+            padding: 20px; 
+            margin: 0; 
+            min-height: 100vh; 
+            overflow-x: hidden; 
+            transition: background 0.5s ease, color 0.5s ease;
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' style='font-size:24px'><text y='24' x='0'>🪄</text></svg>"), auto;
+        }
+
+        body.platform-mode { cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' style='font-size:24px'><text y='24' x='0'>🚂</text></svg>"), auto; }
+        body.forest-mode { cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' style='font-size:24px'><text y='24' x='0'>🍃</text></svg>"), auto; }
+        body.ghibli-mode { cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' style='font-size:24px'><text y='24' x='0'>🪶</text></svg>"), auto; }
+        body.yellow-mode { cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' style='font-size:24px'><text y='24' x='0'>🍯</text></svg>"), auto; }
+
+        .celestial-bg {
+            position: fixed;
+            top: 20px;
+            left: 25px;
+            font-size: 28px; 
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.25; 
+            transition: all 0.5s ease;
+            display: none;
+        }
+
+        body:not(.platform-mode):not(.forest-mode) .celestial-bg {
+            display: block;
+        }
+
+        .celestial-bg::before { content: "🌙"; }
+        body.yellow-mode .celestial-bg::before { content: "☀️"; }
+
+        .ghibli-watermark { display: none; }
+        body.ghibli-mode .ghibli-watermark {
+            display: block;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 180px;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.85;
+        }
+
+        .ghibli-trees {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 160px;
+            background-image: 
+                radial-gradient(circle at 10% 80%, #3b7a57 35px, transparent 36px),
+                radial-gradient(circle at 15% 70%, #4ea86d 45px, transparent 46px),
+                radial-gradient(circle at 85% 75%, #3b7a57 40px, transparent 41px),
+                radial-gradient(circle at 92% 65%, #4ea86d 50px, transparent 51px),
+                radial-gradient(circle at 5% 90%, #2c3e35 25px, transparent 26px),
+                radial-gradient(circle at 95% 90%, #2c3e35 30px, transparent 31px);
+            background-repeat: no-repeat;
+            opacity: 0.5;
+        }
+
+        .ghibli-grass {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 25px;
+            background: #3b7a57;
+            border-radius: 10px 10px 0 0;
+            box-shadow: inset 0 5px 10px rgba(0,0,0,0.1);
+        }
+
+        .totoro-container {
+            position: absolute;
+            bottom: 15px;
+            left: 40px;
+            width: 100px;
+            height: 130px;
+            z-index: 1;
+        }
+        .totoro-ear-l, .totoro-ear-r { position: absolute; top: 0px; width: 12px; height: 30px; background: #3b7a57; border-radius: 50% 50% 0 0; }
+        .totoro-ear-l { left: 22px; transform: rotate(-10deg); }
+        .totoro-ear-r { right: 22px; transform: rotate(10deg); }
+        .totoro-body-shape { position: absolute; top: 20px; left: 12px; width: 76px; height: 105px; background: #3b7a57; border-radius: 38px 38px 30px 30px; }
+        .totoro-belly { position: absolute; top: 35px; left: 20px; width: 60px; height: 70px; background: #fdfbf7; border-radius: 30px; }
+        .totoro-eye-l, .totoro-eye-r { position: absolute; top: 32px; width: 8px; height: 10px; background: #2c3e35; border-radius: 50%; }
+        .totoro-eye-l { left: 34px; }
+        .totoro-eye-r { right: 34px; }
+        .totoro-nose { position: absolute; top: 38px; left: 46px; width: 6px; height: 4px; background: #2c3e35; border-radius: 50%; }
+        .totoro-marks { position: absolute; top: 48px; left: 30px; width: 40px; height: 35px; background: repeating-linear-gradient(0deg, transparent, transparent 7px, #3b7a57 7px, #3b7a57 9px); opacity: 0.6; }
+
+        .station-watermark { display: none; }
+        body.platform-mode .station-watermark {
+            display: block;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.9;
+        }
+        .station-clock { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 46px; height: 46px; border: 4px solid #e5383b; border-radius: 50%; background: #1a1212; box-shadow: 0 0 15px rgba(229, 56, 59, 0.4); }
+        .platform-base { position: absolute; bottom: 0; width: 100%; height: 20px; background: #1a1212; border-top: 3px solid #e5383b; }
+        .vintage-brick-wall { position: absolute; bottom: 20px; left: 5%; width: 120px; height: 80px; background: repeating-linear-gradient(0deg, #2b1818, #2b1818 12px, #1a1212 12px, #1a1212 14px); border-top: 2px solid #e5383b; }
+        .platform-sign { position: absolute; bottom: 60px; right: 10%; background: #e5383b; color: #fff; padding: 4px 12px; font-size: 11px; font-weight: bold; border-radius: 4px; box-shadow: 0 0 10px rgba(229, 56, 59, 0.6); }
+
+        button, .birthday-btn-card, .theme-toggle-btn { cursor: inherit !important; }
+
+        /* --- إضافة خاصية تكبير الأزرار عند الوقوف فوقها --- */
+        .theme-toggle-btn:hover, .mood-btn:hover, .lock-btn:hover, .birthday-btn-card:hover {
+            transform: scale(1.05);
+        }
+
+        .theme-toggle-btn { position: fixed; top: 20px; right: 20px; background: var(--card-bg); border: 1px solid var(--accent-color); color: var(--text-color); padding: 10px 15px; border-radius: 50px; font-size: 13px; z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: all 0.3s ease; }
+
+        .magic-sparkle { position: fixed; pointer-events: none; background: radial-gradient(circle, #ffffff 10%, var(--sparkle-color) 60%, transparent 100%); border-radius: 50%; z-index: 99999; box-shadow: 0 0 8px var(--sparkle-color), 0 0 15px var(--sparkle-shadow); animation: fadeSparkle 0.4s linear forwards; }
+
+        @keyframes fadeSparkle { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; } }
+
+        .intro-section { max-width: 600px; margin: 90px auto 10px auto; padding: 0 15px; position: relative; z-index: 2; }
+        .intro-section h2 { color: var(--text-color); font-size: 22px; font-weight: normal; margin-bottom: 12px; }
+        .intro-text { color: var(--text-color); font-size: 14px; line-height: 1.6; margin: 0; opacity: 0.9; }
+
+        /* --- تصميم العداد التنازلي الجديد --- */
+        .countdown-card {
+            background: var(--card-bg);
+            border: 1px solid var(--accent-color);
+            max-width: 450px;
+            margin: 25px auto;
+            padding: 15px 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 20px var(--sparkle-shadow);
+            position: relative;
+            z-index: 2;
+        }
+        .countdown-title {
+            font-size: 13px;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+        .countdown-timer-grid {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .time-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .time-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-color);
+            text-shadow: 0 0 10px var(--sparkle-shadow);
+        }
+        .time-label {
+            font-size: 10px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .birthday-btn-card { background: linear-gradient(135deg, rgba(241, 196, 15, 0.15), rgba(8, 18, 41, 0.6)); border: 2px dashed var(--accent-color); padding: 25px 20px; margin: 25px auto 25px auto; border-radius: 20px; max-width: 500px; box-shadow: 0 0 25px rgba(241, 196, 15, 0.25); display: block; width: 100%; transition: all 0.3s ease; position: relative; z-index: 2; }
+        body.ghibli-mode .birthday-btn-card { background: linear-gradient(135deg, rgba(59, 122, 87, 0.15), rgba(255, 255, 255, 0.85)); }
+        body.platform-mode .birthday-btn-card { background: linear-gradient(135deg, rgba(229, 56, 59, 0.15), rgba(26, 18, 18, 0.9)); }
+        body.forest-mode .birthday-btn-card { background: linear-gradient(135deg, rgba(52, 211, 153, 0.15), rgba(6, 40, 27, 0.8)); }
+        body.yellow-mode .birthday-btn-card { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(255, 253, 215, 0.95)); }
+
+        .birthday-btn-card h1 { color: var(--accent-color); font-size: 28px; margin: 0 0 8px 0; font-weight: normal; text-shadow: 0 0 15px var(--sparkle-shadow); }
+        .birthday-btn-card p { color: var(--text-color); font-size: 14px; margin: 0; font-style: italic; opacity: 0.85; }
+
+        .mood-intro-text {
+            color: var(--text-color);
+            font-size: 13px;
+            font-style: italic;
+            opacity: 0.85;
+            max-width: 500px;
+            margin: 15px auto 8px auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .mood-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 700px; margin: 10px auto 20px auto; padding: 0 10px; position: relative; z-index: 2; }
+        .mood-btn { background-color: var(--btn-bg); color: var(--text-color); border: 1px solid var(--accent-color); padding: 10px 16px; border-radius: 20px; font-size: 13px; backdrop-filter: blur(3px); position: relative; overflow: hidden; transition: all 0.2s; z-index: 2; }
+        .mood-btn:active { transform: scale(0.95); }
+
+        .secret-teaser { background-color: var(--card-bg); border: 1px solid var(--accent-color); padding: 25px; margin: 45px auto; max-width: 500px; border-radius: 12px; backdrop-filter: blur(5px); box-shadow: 0 0 30px var(--sparkle-shadow); position: relative; z-index: 2; }
+        .secret-teaser h3 { color: var(--accent-color); font-size: 20px; font-weight: normal; margin-top: 0; margin-bottom: 10px; }
+        
+        .lock-icon-container { font-size: 35px; margin: 10px 0; display: inline-block; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .lock-icon-container.unlocking { animation: spinAndOpen 0.7s forwards; }
+        @keyframes spinAndOpen { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(360deg) scale(1.3); } 100% { transform: rotate(360deg) scale(1); } }
+
+        .lock-btn { background: var(--accent-gradient); color: #030712; border: none; padding: 12px 25px; border-radius: 25px; font-weight: bold; font-size: 14px; margin-top: 15px; box-shadow: 0 4px 20px var(--sparkle-shadow); z-index: 2; position: relative; transition: all 0.2s ease; }
+        body.ghibli-mode .lock-btn, body.platform-mode .lock-btn, body.forest-mode .lock-btn, body.yellow-mode .lock-btn { color: #ffffff; }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(3, 7, 18, 0.85); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-box { background-color: #081229; border: 2px solid var(--accent-color); padding: 30px 25px; max-width: 450px; width: 85%; border-radius: 15px; position: relative; box-shadow: 0 0 40px var(--sparkle-shadow); animation: fadeIn 0.4s ease; }
+        body.ghibli-mode .modal-box { background-color: #fcfdfd; border-color: #3b7a57; }
+        body.ghibli-mode .modal-box h3, body.ghibli-mode .modal-box p { color: #2c3e35 !important; }
+        body.yellow-mode .modal-box { background-color: #fffde6; border-color: #f59e0b; }
+        body.yellow-mode .modal-box h3, body.yellow-mode .modal-box p { color: #5c4000 !important; }
+        
+        .modal-box p { color: #ffffff !important; font-size: 16px; line-height: 1.6; margin: 15px 0 25px 0; }
+        .modal-box .close-space-btn { background: var(--accent-gradient); color: #030712; border: none; padding: 10px 25px; border-radius: 25px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 4px 15px var(--sparkle-shadow); transition: transform 0.2s ease, opacity 0.2s ease; }
+        .modal-box .close-space-btn:hover { transform: scale(1.05); opacity: 0.9; }
+        body.ghibli-mode .modal-box .close-space-btn, body.platform-mode .modal-box .close-space-btn, body.forest-mode .modal-box .close-space-btn, body.yellow-mode .modal-box .close-space-btn { color: #ffffff; }
+
+        .bright-owl-modal { background: #fffdf9 !important; border: 3px solid #d4af37 !important; box-shadow: 0 0 50px rgba(255, 215, 0, 0.5) !important; padding: 0 !important; overflow: hidden; border-radius: 20px; }
+        .magic-owl-header { background: linear-gradient(180deg, #fff3d1 0%, #fffdf9 100%); padding: 30px 10px 10px 10px; text-align: center; }
+        .owl-icon { font-size: 55px; display: inline-block; animation: floatOwl 3s ease-in-out infinite; }
+        @keyframes floatOwl { 0% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-10px) rotate(3deg); } 100% { transform: translateY(0px) rotate(0deg); } }
+        .bright-content-area { padding: 20px 25px 30px 25px; color: #2c1d11 !important; background: #fffdf9; }
+        .bright-title { color: #8b0000 !important; font-size: 22px; margin: 10px 0 15px 0; font-weight: bold; font-family: 'Georgia', serif; }
+        .close-bright-btn { background-color: #8b0000; color: #ffffff; border: none; padding: 10px 30px; border-radius: 20px; font-size: 14px; margin-top: 20px; box-shadow: 0 4px 12px rgba(139, 0, 0, 0.2); font-weight: bold; transition: all 0.2s; }
+        .close-bright-btn:hover { transform: scale(1.05); }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        
+        .confetti { position: fixed; width: 10px; height: 10px; z-index: 9999; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(105vh) rotate(360deg); } }
+        
+        .dynamic-ambient-particle { position: fixed; pointer-events: none; z-index: 1; animation: ambientFloat linear forwards; }
+        @keyframes ambientFloat {
+            0% { transform: translateY(-10vh) translateX(0) rotate(0deg) scale(0.8); opacity: 0; }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { transform: translateY(105vh) translateX(60px) rotate(360deg) scale(1.2); opacity: 0; }
+        }
+
+        .flying-letter { position: fixed; font-size: 24px; z-index: 9998; pointer-events: none; animation: flyUp 3.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+        @keyframes flyUp { 0% { transform: translateY(105vh) translateX(0) rotate(0deg); opacity: 1; } 50% { transform: translateY(50vh) translateX(50px) rotate(180deg); opacity: 0.8; } 100% { transform: translateY(-10vh) translateX(-50px) rotate(360deg); opacity: 0; } }
+
+        .copy-area {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--accent-color);
+            padding: 15px;
+            border-radius: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+            text-align: left;
+            direction: ltr;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #fff;
+            user-select: all;
+            white-space: pre-wrap;
+            margin: 15px 0;
+        }
+        body.ghibli-mode .copy-area { background: rgba(0,0,0,0.05); color: #2c3e35; border-color: #3b7a57; }
+        body.yellow-mode .copy-area { background: rgba(0,0,0,0.05); color: #5c4000; border-color: #f59e0b; }
+    </style>
+</head>
+<body>
+
+    <div class="celestial-bg"></div>
+
+    <div class="ghibli-watermark">
+        <div class="ghibli-trees"></div>
+        <div class="ghibli-grass"></div>
+        <div class="totoro-container">
+            <div class="totoro-ear-l"></div>
+            <div class="totoro-ear-r"></div>
+            <div class="totoro-body-shape"></div>
+            <div class="totoro-belly"></div>
+            <div class="totoro-eye-l"></div>
+            <div class="totoro-eye-r"></div>
+            <div class="totoro-nose"></div>
+            <div class="totoro-marks"></div>
+        </div>
+    </div>
+
+    <div class="station-watermark">
+        <div class="station-clock"></div>
+        <div class="vintage-brick-wall"></div>
+        <div class="platform-sign">Platform 9 ¾</div>
+        <div class="platform-base"></div>
+    </div>
+
+    <button class="theme-toggle-btn" onclick="toggleTheme()">🔮 Switch Mode</button>
+
+    <div class="intro-section">
+        <h2>Welcome to your own space 🌕</h2>
+        <p id="main-intro" class="intro-text">
+            This place was created under the stars🌟,just for you. It is your quiet refuge when the world gets too loud, and your personal notebook when your heart is full🍀.
+        </p>
+    </div>
+
+    <!-- بطاقة العداد التنازلي التفاعلي لـ 14 أوت -->
+    <div class="countdown-card">
+        <div class="countdown-title" id="countdownTitle">⏳ Counting down to August 14th...</div>
+        <div class="countdown-timer-grid">
+            <div class="time-box">
+                <span class="time-value" id="days">00</span>
+                <span class="time-label">Days</span>
+            </div>
+            <div class="time-box">
+                <span class="time-value" id="hours">00</span>
+                <span class="time-label">Hours</span>
+            </div>
+            <div class="time-box">
+                <span class="time-value" id="minutes">00</span>
+                <span class="time-label">Mins</span>
+            </div>
+            <div class="time-box">
+                <span class="time-value" id="seconds">00</span>
+                <span class="time-label">Secs</span>
+            </div>
+        </div>
+    </div>
+
+    <button class="birthday-btn-card" onclick="openBirthdaySpace(this)">
+        <h1>Happy Birthday falah! 🎂✨</h1>
+        <p>Click to open your special space... 🦉✉️</p>
+    </button>
+
+    <p class="mood-intro-text">Choose your current mood and let the words translate what your heart needs in this moment🕊🌙</p>
+
+    <div class="mood-container">
+        <button class="mood-btn" onclick="openMood('Happy', this)">Happy</button>
+        <button class="mood-btn" onclick="openMood('Sad', this)">Sad</button>
+        <button class="mood-btn" onclick="openMood('Bored', this)">Bored</button>
+        <button class="mood-btn" onclick="openMood('Stressed', this)">Stressed</button>
+        <button class="mood-btn" onclick="openMood('Angry', this)">Angry</button>
+        <button class="mood-btn" onclick="openMood('Anxious', this)">Anxious</button>
+        <button class="mood-btn" onclick="openMood('Lonely', this)">Lonely</button>
+        <button class="mood-btn" onclick="openMood('Tired', this)">Tired</button>
+        <button class="mood-btn" onclick="openMood('Excited', this)">Excited</button>
+        <button class="mood-btn" onclick="openMood('Calm', this)">Calm</button>
+        <button class="mood-btn" onclick="openMood('Overwhelmed', this)">Overwhelmed</button>
+    </div>
+
+    <div class="secret-teaser">
+        <h3>Our Secret Box 🔒</h3>
+        <div class="lock-icon-container" id="lockIcon">🔒</div>
+        <p class="intro-text" style="font-style: italic;">You'll need a password to enter...</p>
+        <button class="lock-btn" onclick="checkPassword()">Unlock Memories</button>
+    </div>
+
+    <div id="moodModal" class="modal-overlay">
+        <div class="modal-box" id="modalBoxContainer"></div>
+    </div>
+
+    <script>
+        const moodMessages = {
+            Happy: ["Keep that beautiful smile on! Your happiness literally lights up the whole universe, Malek✨","Le bonheur te va à merveille","Ton sourire peut illuminer une journée","Aujourd'hui est une belle journée pour être heureux","Le bonheur se cache dans les petits détails","You deserve every bit of this happiness"],
+            Sad: ["لَا تَحْزَنْ إِنَّ اللَّهَ مَعَنَا", "Even broken hearts can bloom again", "Les jours difficiles ne durent pas éternellement","It's okay to feel sad sometimes. Just remember that behind the darkest clouds, there is someone who loves you to the moon and back🌙.I'm always here.🫂✨","Chaque pluie finit par s'arrêter","not everything broken needs fixing somethings are meant to stay as memories 🥀","فَإِنَّ مَعَ الْعُسْرِ يُسْرًا  إِنَّ مَعَ الْعُسْرِ يُسْرًا"], 
+            Bored: ["Try something your future self will thank you for", "Ton aventure commence maintenant","Try practicing the blogging you taught me 🫠", "Laisse ton enthousiasme te guider"],
+            Stressed: ["Pause. Breathe. Continue", "Respire... tout ira bien","Take a deep breath. In... and out. You are doing amazing, don't let anything stress your beautiful mind. 🧘‍♀️🤍", "Slow down, Malek. One step at a time. Everything is going to be fine. ⏳", "Tu fais déjà de ton mieux"],
+            Angry: ["Don't let anger steal your peace", "Chaque tempête finit par passer"," أقوى الناس من يملك نفسه عند الغضب", "What could be causing this anger? Relax, don't live your life with anger and hate in your heart. You'll only be hurting yourself more than the people you hate 🥀", "Le calme est parfois la meilleure réponse"],
+            Anxious: ["أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ ", "One step at a time is still progress", "Tu trouveras tu chemin"," حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ", "You don't have to carry tomorrow today"," ليس كل ما تخشاه سيحدث", "This feeling is temporary. It will pass","لا تحمل همّ غدٍ لم يأتِ بعد","It's okay not to have all the answers","Respire doucement, tout ira bien","Le bonheur te va à merveille","Tes inquiétudes ne définissent pas qui tu es."," اطمئن، فما كتبه الله لك سيأتيك", "Le calme revient toujours après la tempête","N'oublie pas : chaque jour est un nouveau départ","Même les nuits les plus longues finissent par laisser place au soleil.","Tu n'es pas seul face à ce que tu ressens.","Hey, You are safe here. Everything is going to be perfectly fine, I promise. 🌙✨","Chaque détour t'apprend quelque chose"],
+            Lonely: [" وَهُوَ مَعَكُمْ أَيْنَ مَا كُنْتُمْ","الوحدة أحيانًا بداية لاكتشاف نفسك", "Being alone doesn't mean being forgotten.", "You matter, even when no one says it","You are NEVER alone. Even when I'm not there, you have a permanent place in my heart. 🤍🫂","Tu n'es pas aussi seul que tu le crois","Someone is probably thinking of you right now","If you ever feel lonely, remember this space was built to remind you of me. 🔗","Même les étoiles brillent seules"],
+            Tired: ["Rest today, rise stronger tomorrow","لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا ", "You worked hard today. Now it's time to close your eyes, relax under the stars, and rest. 😴🌌","Malek, go to sleep! Your body and mind deserve a good rest tonight. 🛌✨", "Ton esprit mérite هذه paix"],
+            Excited: ["Profite de ce moment, il est à toi"," فَإِذَا عَزَمْتَ فَتَوَكَّلْ عَلَى اللَّهِ","L'espoir existe toujours", "Laisse ton enthousiasme ouvrir les portes","Fonce, les meilleures histoires начинают ainsi","Keep that spark alive!"],
+            Calm: ["Le calme est une vraie force", "Même les étoiles brillent seules","Peaceful minds are the most beautiful ones. Enjoy this quiet, beautiful moment under the night sky. 🕊️✨","Protect this inner peace, Malek. It's the most valuable thing. 🤍","A calm heart is a powerful one. Enjoy the stillness. 🌌", "Tu n'es pas aussi seul que tu le crois"],
+            Overwhelmed: ["Not knowing the way doesn't mean you're lost forever"," قد يطول الطريق، لكن الوصول يستحق", "Step back, turn off the noise, and just stay here in our little quiet corner for a while. No pressure at all. 🌊🌙","When everything feels too much, it's okay to completely unplug. 🛑","Disconnect for a while. Hide here until you feel better. 🤍","Tu fais déjà de ton mieux", "Respire... tout ira bien","ابدأ بما تعرف، وسيظهر لك ما لا تعرف"]
+        };
+
+        function updateCountdown() {
+            const now = new Date();
+            let year = now.getFullYear();
+            let targetDate = new Date(year, 7, 14, 0, 0, 0);
+            
+            if (now.getTime() > targetDate.getTime()) {
+                targetDate = new Date(year + 1, 7, 14, 0, 0, 0);
+            }
+
+            const diff = targetDate.getTime() - now.getTime();
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = String(days).padStart(2, '0');
+            document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+            
+            document.getElementById('countdownTitle').innerText = `⏳ Counting down to August 14th (${targetDate.getFullYear()})...`;
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.querySelector('.theme-toggle-btn');
+            
+            if (!body.classList.contains('ghibli-mode') && !body.classList.contains('platform-mode') && !body.classList.contains('forest-mode') && !body.classList.contains('yellow-mode')) {
+                body.classList.add('ghibli-mode');
+                btn.innerHTML = "🌱 Ghibli Mode";
+            } else if (body.classList.contains('ghibli-mode')) {
+                body.classList.remove('ghibli-mode');
+                body.classList.add('platform-mode');
+                btn.innerHTML = "🚂 Platform 9 ¾";
+            } else if (body.classList.contains('platform-mode')) {
+                body.classList.remove('platform-mode');
+                body.classList.add('forest-mode');
+                btn.innerHTML = "🍃 Forest Mode";
+            } else if (body.classList.contains('forest-mode')) {
+                body.classList.remove('forest-mode');
+                body.classList.add('yellow-mode');
+                btn.innerHTML = "☀️ Sunshine Mode";
+            } else {
+                body.classList.remove('yellow-mode');
+                btn.innerHTML = "🔮 Hogwarts Mode";
+            }
+        }
+
+        let throttleTimer = false;
+
+        function triggerWandMagic(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'magic-sparkle';
+            const size = Math.random() * 5 + 4;
+            sparkle.style.width = size + 'px';
+            sparkle.style.height = size + 'px';
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 400);
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            if (!throttleTimer) {
+                triggerWandMagic(e.clientX, e.clientY);
+                throttleTimer = true;
+                setTimeout(() => { throttleTimer = false; }, 30);
+            }
+        });
+
+        window.addEventListener('touchmove', (e) => { 
+            if (e.touches.length > 0) {
+                triggerWandMagic(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        }, { passive: true });
+
+        setInterval(() => {
+            for(let i = 0; i < 2; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'dynamic-ambient-particle';
+                particle.style.left = Math.random() * window.innerWidth + 'px';
+                particle.style.top = '-30px';
+                
+                const body = document.body;
+                if (body.classList.contains('ghibli-mode')) {
+                    particle.innerText = Math.random() > 0.4 ? '🍃' : '🍀';
+                    particle.style.fontSize = (Math.random() * 12 + 14) + 'px';
+                } else if (body.classList.contains('platform-mode')) {
+                    particle.innerText = Math.random() > 0.4 ? '🦉' : '✉️';
+                    particle.style.fontSize = (Math.random() * 10 + 16) + 'px';
+                } else if (body.classList.contains('forest-mode')) {
+                    particle.innerText = Math.random() > 0.5 ? '✨' : '🌿';
+                    particle.style.color = '#34d399';
+                    particle.style.fontSize = (Math.random() * 10 + 12) + 'px';
+                } else if (body.classList.contains('yellow-mode')) {
+                    particle.innerText = Math.random() > 0.5 ? '🌟' : '☀️';
+                    particle.style.fontSize = (Math.random() * 10 + 14) + 'px';
+                } else {
+                    particle.innerText = Math.random() > 0.5 ? '✨' : '💫';
+                    particle.style.color = '#f1c40f';
+                    particle.style.fontSize = (Math.random() * 10 + 12) + 'px';
+                }
+                
+                particle.style.animationDuration = (Math.random() * 2.5 + 2) + 's';
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 5000);
+            }
+        }, 300);
+
+        function buttonExplosion(element) {
+            const rect = element.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            for (let i = 0; i < 25; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'magic-sparkle';
+                sparkle.style.width = '8px'; sparkle.style.height = '8px';
+                sparkle.style.left = centerX + 'px'; sparkle.style.top = centerY + 'px';
+                document.body.appendChild(sparkle);
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 90 + 30;
+                sparkle.animate([{ transform: 'translate(-50%, -50%) scale(1)', opacity: 1 }, { transform: `translate(calc(-50% + ${Math.cos(angle) * velocity}px), calc(-50% + ${Math.sin(angle) * velocity}px)) scale(0)`, opacity: 0 }], { duration: 700, easing: 'ease-out', fill: 'forwards' });
+                setTimeout(() => sparkle.remove(), 700);
+            }
+        }
+
+        function launchConfettiAndLetters() {
+            const colors = ['#f1c40f', '#e67e22', '#3498db', '#2ecc71', '#9b59b6', '#e74c3c'];
+            for (let i = 0; i < 70; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.top = '-10px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0%';
+                confetti.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 4000);
+            }
+
+            const symbols = ['✨', '💌', '🌟', '💖', '🎈', '🦉', '🌸'];
+            for (let i = 0; i < 25; i++) {
+                const letter = document.createElement('div');
+                letter.className = 'flying-letter';
+                letter.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                letter.style.left = (Math.random() * window.innerWidth * 0.9 + window.innerWidth * 0.05) + 'px';
+                document.body.appendChild(letter);
+                setTimeout(() => letter.remove(), 3500);
+            }
+        }
+
+        function openBirthdaySpace(btn) {
+            buttonExplosion(btn);
+            const box = document.getElementById('modalBoxContainer');
+            box.className = 'modal-box bright-owl-modal'; 
+            box.innerHTML = `
+                <div class="magic-owl-header"><span class="owl-icon">🦉</span></div>
+                <div class="bright-content-area">
+                    <h3 class="bright-title">🦉 An Owl Post Delivery ✨</h3>
+                    <p style="font-size:16px; line-height: 1.8; color: #2c1d11 !important; font-weight: 500;">
+                        On your special day, I wish you a lifetime of smiles, a heart full of dreams, and adventures that make every moment worth living. Have a fantastic birthday and an even more incredible year! 🌟🎂
+                    </p>
+                    <button class="close-bright-btn" onclick="closeModal()">Close Letter</button>
+                </div>`;
+            document.getElementById('moodModal').style.display = 'flex';
+            launchConfettiAndLetters();
+        }
+
+        function openMood(mood, btn) {
+            buttonExplosion(btn);
+            const box = document.getElementById('modalBoxContainer');
+            box.className = 'modal-box'; 
+            const msg = moodMessages[mood][Math.floor(Math.random() * moodMessages[mood].length)];
+            box.innerHTML = `<h3 style="color:var(--accent-color);">${mood} Space 🌌</h3><p>${msg}</p><button class="close-space-btn" onclick="closeModal()">Close Space 🌙</button>`;
+            document.getElementById('moodModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('moodModal').style.display = 'none'; }
+        
+        function checkPassword() {
+            const password = prompt("Enter our secret password:");
+            if (password === "كثيرة الانتاج") {
+                const lockIcon = document.getElementById('lockIcon');
+                lockIcon.classList.add('unlocking');
+                setTimeout(() => { lockIcon.innerText = '🔓'; }, 300);
+                setTimeout(() => {
+                    const box = document.getElementById('modalBoxContainer');
+                    box.className = 'modal-box';
+                    box.innerHTML = `
+                        <h3 style="color:var(--accent-color);">✨ Our Secret Box ✨</h3>
+                        <div class="copy-area">Miiin nebda wmin nkemel, 
+First joyeux anniversaire ma belle kol 3am wnti b1000 khir, ntmanalk toute la santé du monde w t7e9e9i tous vos rêves sans exception... malgré deja chre7t chwiya mn mes sentiments lik alf mera mais hkk wkyn some feelings mayn7ekawch w mayenwesfoch, sooo deep feelings. And for the 1001 time ghadi n3eber: jamais tkheyelt ghadi nkon friend lhuman like you iam so grateful to have you in my life wlh, jamais kant we7da m3aya fi we9d fer7i wz3afi mn 9bl kima nti, malgré mykonch 3ndk lwe9t, malgré tkoni nti bro7k machi fi moralk mais dymn nel9ak m3aya wnd7ek mn9elbi, wkan 9a3 madertili wlw fi 7yati ghi de7k eli d7ktah m3ak we7do kan dwa lbzzzf jro7 ❤️‍🩹, 3endi ch7aal wana nستena fi had nhar bach nhdr à l'aise, iam so grateful for your parents psq jabok ldenya w they are sooooo lucky for having a daughter like u, jss beli 7ta nti tla9iti bnas wej3ok wkerhok vv....  mais anytime u feel alone tfekri beli iam here wjamais la nekerhk be sure of that w bli mahmaaaaa sra binatna ghadi jamais lanensa beli kant fi 7yati we7da kima nti, ghadi ne7ki lwladi w2a7fadi 3lik w3la ch7al konti 2insana 9lbk byed wtebghi lkhir lnas kima tebghih lro7k, but ofc nchlh nb9aw m3a be3d ghila lla fin te7dri 3ersii wne7der 3ersk wnrebo wladna m3a be3d 🤏 and be sure beli jamais 7abit se7ba 9edek wfi we9t 9sir ,sa7 hadi the first birthday lik wana sa7btk mais ni 7asa 3reftk hadi sniiiiin wkonti li el3iwad, plsss don't be sad cuz m13endkch khtek psq madamni fi 7yatk ana khtek    fi kolchi machi ghi flvisage (◠‿◕) i love you to the moon and back, to infinity and beyond, forever and ever malek (⊃｡•́‿•̀:.｡)⊃ jspr site ykon 3jbk whada ghii chwiya mo9aranat bwach dertili (╯︵╰,) andd jss beli wkan nji nkteب kolch ghadi nkteب ktab wmankemelch,soo happy birthday and enjoy your day 🕊❤️‍🩹</div>
+                        <button class="close-space-btn" onclick="closeModal(); resetLock();">Close</button>
+                    `;
+                    document.getElementById('moodModal').style.display = 'flex';
+                }, 700);
+            } else { alert("Wrong password! 🔒"); }
+        }
+
+        function resetLock() { 
+            document.getElementById('lockIcon').innerText = '🔒'; 
+            document.getElementById('lockIcon').classList.remove('unlocking'); 
+        }
+    </script>
+</body>
+</html>
